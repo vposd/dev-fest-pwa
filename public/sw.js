@@ -1,3 +1,6 @@
+importScripts('./scripts/idb-promised.js');
+importScripts('./scripts/store.js');
+
 const filesToCache = [
   '/',
   '/sw.js',
@@ -56,4 +59,28 @@ self.addEventListener('fetch', e => {
       return response || fetch(e.request);
     })
   );
+});
+
+self.addEventListener('sync', e => {
+  console.log('[SW] Sync event', { e });
+  if (e.tag === 'outbox') {
+    store.outbox('readonly')
+      .then(outboxStore => outboxStore.getAll())
+      .then(newsItems => {
+        return Promise.all(
+          newsItems.map(newsItem => {
+            const headers = new Headers({ 'Content-Type': 'application/json' });        
+            const body = JSON.stringify(newsItem);
+            return fetch('/api/add', { method: 'POST', headers, body })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  store.outbox('readwrite').then(outboxStore => outboxStore.delete(newsItem.id));
+                }
+              })
+          })
+        );
+      })
+    .catch(e => console.error(e));
+  }
 });

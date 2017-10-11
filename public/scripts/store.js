@@ -8,8 +8,15 @@ const store = {
       if (!upgradeDb.objectStoreNames.contains('news')) {
         upgradeDb.createObjectStore('news', { keyPath: 'id' });
       }
+      if (!upgradeDb.objectStoreNames.contains('outbox')) {
+        upgradeDb.createObjectStore('outbox', { keyPath: 'id' });
+      }
     })
       .then(db => store.db = db);
+  },
+
+  outbox(mode) {
+    return store.init().then(db => db.transaction('outbox', mode).objectStore('outbox'));
   },
 
   news(mode) {

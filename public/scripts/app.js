@@ -45,7 +45,9 @@ function loadNetworkFirst() {
             updateUI(offlineNews);
           }
         }).catch(e => console.error(e))
-    });
+    })
+    .then(() => navigator.serviceWorker.ready)
+    .then(registration => registration.sync.register('outbox'));
 }
 
 // API
@@ -58,24 +60,22 @@ function addServerData() {
   const jsonDate = new Date();
   jsonDate.setHours(jsonDate.getHours() - jsonDate.getTimezoneOffset() / 60);
 
-  const newsItem = {
+  const data = {
     id: jsonDate.valueOf(),
     publishedAt: jsonDate.toJSON(),
   };
   const inputIds = ['author', 'title', 'description', 'url'];  
-  inputIds.forEach(id => Object.assign(newsItem, { [id]: document.getElementById(id).value }));
+  inputIds.forEach(id => Object.assign(data, { [id]: document.getElementById(id).value }));
   inputIds.forEach(id => document.getElementById(id).value = '');
 
-  const headers = new Headers({ 'Content-Type': 'application/json' });        
-  const body = JSON.stringify(newsItem);
-  return fetch('/api/add', { method: 'POST', headers, body })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        updateUI([newsItem]);
-        toggleDialogVisible(false);
-      }
-    });
+  updateUI([data]);
+  saveNewsDataLocally([data]);
+  toggleDialogVisible(false);
+
+  store.outbox('readwrite')
+    .then(outbox => outbox.put(data))
+    .then(() => navigator.serviceWorker.ready)
+    .then(registration => registration.sync.register('outbox'));
 }
 
 // Storage
