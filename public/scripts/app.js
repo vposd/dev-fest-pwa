@@ -25,6 +25,26 @@ function loadNetworkFirst() {
     .then(news => {
       updateUI(news);
       toggleLoaderHidden(true);
+      saveNewsDataLocally(news)
+        .then(() => {
+          setLastUpdated(new Date());
+          showMessage('success', 'Данные сохранены для работы в оффлайне');
+        })
+        .catch(() => {
+          showMessage('error', 'Чёта данные не могут быть сохранены :(');
+        });
+    }, error => {
+      console.log('Запрос к бэкенду упал, возможно мы оффлайн...', error);
+      toggleLoaderHidden(true);
+      getLocalNewsData()
+        .then(offlineNews => {
+          if (!offlineNews.length) {
+            showMessage('warn', 'Вы работаете оффлайн, cохраненных данных нет');
+          } else {
+            showMessage('warn', 'Вы работаете оффлайн, и просматриваете сохраненные данные от ' + getLastUpdated());
+            updateUI(offlineNews);
+          }
+        }).catch(e => console.error(e))
     });
 }
 
@@ -68,9 +88,20 @@ function setLastUpdated(date) {
   localStorage.setItem('lastUpdated', date);
 }
 
-function saveNewsDataLocally(news) { }
+function saveNewsDataLocally(news) {
+  return store.news('readwrite')
+    .then(newsStore => {
+      return Promise.all(news.map(newsItem => newsStore.put(newsItem)))
+        .catch(() => {
+          tx.abort();
+          throw Error('News were not added to the store');
+        });
+    });
+}
 
-function getLocalNewsData() { }
+function getLocalNewsData() {
+  return store.news('readonly').then(newsStore => newsStore.getAll());
+}
 
 // UI
 

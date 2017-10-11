@@ -5,6 +5,8 @@ const filesToCache = [
   '/index.html',  
   '/scripts/app.js',
   '/images/icon.png',
+  '/scripts/store.js',
+  '/scripts/idb-promised.js',
   '/images/favicon-16x16.png',
   '/images/favicon-32x32.png',
   '/images/ic_add_white_24px.svg',
