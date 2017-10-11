@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <title>DevFest PWA</title>  
+  
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="msapplication-TileColor" content="#242e36">
+  <meta name="msapplication-TileImage" content="images/icon-192x192.png">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192x192.png">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet" media="all">
+  <link rel="stylesheet" type="text/css" href="styles/style.css" media="all">
+</head>
+
+<body>
+  <header class="header">
+    <h1 class="header__title">News</h1>
+    <button aria-hidden="true" class="header-button open-dialog-button"></button>
+  </header>
+
+  <p id="message" class="message"></p>
+
+  <main class="main">
+    <div class="container">
+
+    </div>
+  </main>
+
+  <div class="dialog-container">
+    <div class="dialog">
+      <div class="dialog-title">Add news</div>
+      <div class="dialog-body">
+        <label for="author">Author</label>
+        <input id="author" type="text" placeholder="Author..." />
+        <label for="title">Title</label>
+        <input id="title" type="text" placeholder="Title..." />
+        <label for="description">Description</label>
+        <textarea id="description" placeholder="Description..."></textarea>
+        <label for="url">Url</label>
+        <input id="url" type="text" placeholder="Url..." />
+      </div>
+      <div class="dialog-buttons">
+        <button aria-hidden="true" class="mdl-button add-button">Add</button>
+        <button aria-hidden="true" class="mdl-button close-dialog-button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="loader">
+    <svg viewBox="0 0 32 32" width="32" height="32">
+      <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
+    </svg>
+  </div>
+
+  <script src="scripts/app.js" async></script>
+</body>
+
+</html>
