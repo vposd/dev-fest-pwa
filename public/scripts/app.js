@@ -13,11 +13,6 @@ vm.addButton.addEventListener('click', addServerData);
 
 loadNetworkFirst();
 
-window.addEventListener('online', () => {
-  vm.container.innerHTML = '';
-  loadNetworkFirst();
-});
-
 //////////
 
 function loadNetworkFirst() {
